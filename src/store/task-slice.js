@@ -13,6 +13,13 @@ const taskSlice = createSlice({
     deleteTask(state, action) {
       state.tasks = state.tasks.filter((task) => task.id !== action.payload);
     },
+    completedTask(state, action) {
+      state.tasks = state.tasks.map((task) =>
+        task.id === action.payload
+          ? { ...task, complete: !task.complete }
+          : { ...task },
+      );
+    },
     toggleSubTask(state, action) {
       state.tasks = state.tasks.map((task) =>
         task.id === action.payload
@@ -29,14 +36,26 @@ const taskSlice = createSlice({
       );
     },
     deleteSubtask(state, action) {
-      console.log(state);
-      console.log(action.payload);
       state.tasks = state.tasks.filter((task) =>
         task.id === action.payload.id
           ? {
               ...task,
               subtask: (task.subtask = task.subtask.filter(
                 (sub) => sub.subId !== action.payload.subId,
+              )),
+            }
+          : { ...task },
+      );
+    },
+    completedSubTask(state, action) {
+      state.tasks = state.tasks.filter((task) =>
+        task.id === action.payload.id
+          ? {
+              ...task,
+              subtask: (task.subtask = task.subtask.map((sub) =>
+                sub.subId === action.payload.subId
+                  ? { ...sub, subTaskCompleted: !sub.subTaskCompleted }
+                  : { ...sub },
               )),
             }
           : { ...task },

@@ -4,17 +4,17 @@ import TaskItem from "./TaskItem";
 
 const TaskList = () => {
   const { tasks } = useSelector((state) => state.task);
-  return (
-    <ul>
-      {tasks.length === 0 ? <h1>Tasklist empty</h1> : <h1> Task-List</h1>}
 
-      {tasks.map((task) => (
+  return (
+    <div>
+      {tasks.length === 0 ? <h1>Task-list empty</h1> : <h1>Task-List</h1>}
+      {tasks?.map((task) => (
         <TaskItem
           key={task.id}
           {...task}
         />
       ))}
-    </ul>
+    </div>
   );
 };
 
