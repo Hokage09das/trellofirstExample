@@ -17,48 +17,35 @@ const taskSlice = createSlice({
       state.tasks = state.tasks.map((task) =>
         task.id === action.payload
           ? { ...task, complete: !task.complete }
-          : { ...task },
+          : task,
       );
     },
     toggleSubTask(state, action) {
       state.tasks = state.tasks.map((task) =>
         task.id === action.payload
           ? { ...task, isVisible: !task.isVisible }
-          : { ...task },
+          : task,
       );
     },
-    addSubtask(state, action) {
-      console.log(action.payload);
-      state.tasks.filter((task) =>
-        task.id === action.payload.id
-          ? { ...task, subtask: task.subtask.push(action.payload) }
-          : { ...task },
+    addSubtask(state, { payload }) {
+      const currentSubTask = state.tasks.find((task) => task.id === payload.id);
+      currentSubTask.subtask.push(payload);
+      //     ? { ...task, subtask: task.subtask.push(action.payload) }
+      //     : task,
+      // );
+    },
+    deleteSubtask(state, { payload: { id, subId } }) {
+      const currentSubTask = state.tasks.find((task) => task.id === id);
+      currentSubTask.subtask = currentSubTask.subtask.filter(
+        (sub) => sub.subId !== subId,
       );
     },
-    deleteSubtask(state, action) {
-      state.tasks = state.tasks.filter((task) =>
-        task.id === action.payload.id
-          ? {
-              ...task,
-              subtask: (task.subtask = task.subtask.filter(
-                (sub) => sub.subId !== action.payload.subId,
-              )),
-            }
-          : { ...task },
-      );
-    },
-    completedSubTask(state, action) {
-      state.tasks = state.tasks.filter((task) =>
-        task.id === action.payload.id
-          ? {
-              ...task,
-              subtask: (task.subtask = task.subtask.map((sub) =>
-                sub.subId === action.payload.subId
-                  ? { ...sub, subTaskCompleted: !sub.subTaskCompleted }
-                  : { ...sub },
-              )),
-            }
-          : { ...task },
+    completedSubTask(state, { payload: { id, subId } }) {
+      const currentSubTask = state.tasks.find((task) => task.id === id);
+      currentSubTask.subtask = currentSubTask.subtask.map((sub) =>
+        sub.subId === subId
+          ? { ...sub, subTaskCompleted: !sub.subTaskCompleted }
+          : sub,
       );
     },
   },
